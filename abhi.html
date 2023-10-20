@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Real-Time Chat</title>
+    <style>
+      .chat-container {
+        width: 300px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        display: inline-block;
+        vertical-align: top;
+        margin-right: 20px;
+      }
+      .chat-messages {
+        border: 1px solid #ccc;
+        min-height: 200px;
+        padding: 10px;
+        margin-bottom: 10px;
+        overflow-y: hidden;
+      }
+      .message-input {
+        width: 100%;
+        padding: 5px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Real-Time Chat</h1>
+    <div class="chat-container">
+      <h2>User 1</h2>
+      <div class="chat-messages"></div>
+      <input
+        type="text"
+        class="message-input"
+        placeholder="Type your message..."
+      />
+    </div>
+
+    <div class="chat-container">
+      <h2>User 2</h2>
+      <div class="chat-messages"></div>
+      <input
+        type="text"
+        class="message-input"
+        placeholder="Type your message..."
+      />
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        const chatContainers = $(".chat-container");
+        const messageInputs = $(".message-input");
+
+        messageInputs.on("keyup", function (event) {
+          if (event.keyCode === 13) {
+            const senderIndex = messageInputs.index(this);
+            const receiverIndex = senderIndex === 0 ? 1 : 0;
+
+            sendMessage(senderIndex, receiverIndex);
+          }
+        });
+
+        function sendMessage(senderIndex, receiverIndex) {
+          const messageInput = messageInputs.eq(senderIndex);
+          const message = messageInput.val();
+          if (message.trim() !== "") {
+            appendMessage(senderIndex, "You", message);
+            appendMessage(receiverIndex, "Other User", message);
+
+            // Retrieve the chat data from local storage
+            let chatData = JSON.parse(localStorage.getItem("chatData")) || {
+              user1: [],
+              user2: [],
+            };
+
+            // Update the chat data
+            chatData["user" + (senderIndex + 1)].push({
+              sender: "You",
+              message: message,
+            });
+            chatData["user" + (receiverIndex + 1)].push({
+              sender: "Other User",
+              message: message,
+            });
+
+            // Store the updated chat data in local storage
+            localStorage.setItem("chatData", JSON.stringify(chatData));
+
+            messageInput.val("");
+          }
+        }
+
+        function appendMessage(containerIndex, sender, text) {
+          const chat = chatContainers.eq(containerIndex).find(".chat-messages");
+          chat.append("<p><strong>" + sender + ":</strong> " + text + "</p>");
+          chat.scrollTop(chat[0].scrollHeight);
+        }
+
+        // Retrieve and display stored messages on page load
+        const storedChatData = JSON.parse(localStorage.getItem("chatData")) || {
+          user1: [],
+          user2: [],
+        };
+
+        storedChatData.user1.forEach((message) => {
+          appendMessage(0, message.sender, message.message);
+        });
+
+        storedChatData.user2.forEach((message) => {
+          appendMessage(1, message.sender, message.message);
+        });
+      });
+    </script>
+  </body>
+</html>

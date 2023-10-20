@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>State and City Dropdowns</title>
+    <link
+      rel="stylesheet"
+      href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+        background-color: blueviolet;
+        color: white;
+      }
+      .dropdown-container {
+        display: flex;
+        justify-content: center;
+      }
+      .dropdown {
+        margin-right: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Select a State and City</h1>
+    <div class="dropdown-container">
+      <div class="dropdown">
+        <label for="stateDropdown" style="font-size: 20px"
+          >Select a State:</label
+        >
+        <select id="stateDropdown" style="width: 200px; height: 30px"></select>
+      </div>
+      <div class="dropdown">
+        <label for="cityDropdown" style="font-size: 20px">Select a City:</label>
+        <select id="cityDropdown" style="width: 200px; height: 30px"></select>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Define a mapping of states to cities
+        var stateToCities = {
+          Gujrat: ["Surat", "Ahamdabad", "Baroda"],
+          Maharastra: ["Mumbai", "Pune", "Thane"],
+          Rajasthan: ["Udaipur", "Jaipur", "Jodhpur"],
+        };
+
+        // Populate the state dropdown
+        var stateDropdown = $("#stateDropdown");
+        $.each(stateToCities, function (state, cities) {
+          stateDropdown.append($("<option></option>").text(state));
+        });
+
+        // Initialize the city dropdown with the cities of the first state
+        var initialCities = stateToCities[$("#stateDropdown").val()];
+        var cityDropdown = $("#cityDropdown");
+        $.each(initialCities, function (index, city) {
+          cityDropdown.append($("<option></option>").text(city));
+        });
+
+        // Handle state dropdown change event
+        stateDropdown.on("change", function () {
+          var selectedState = $(this).val();
+          var selectedCities = stateToCities[selectedState];
+
+          // Clear and update the city dropdown
+          cityDropdown.empty();
+          $.each(selectedCities, function (index, city) {
+            cityDropdown.append($("<option></option>").text(city));
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

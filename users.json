@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Harsh",
+    "username": "harsh2010",
+    "email": "harsh@gmail.com",
+    "phone": "8320438662"
+  },
+  {
+    "id": 2,
+    "name": "Nevil",
+    "username": "nevil123",
+    "email": "Nevil@gmail.com",
+    "phone": "6355492053"
+  },
+  {
+    "id": 3,
+    "name": "Abhisekh",
+    "username": "Abhi10",
+    "email": "abhi@gmail.com",
+    "phone": "2035678954"
+  }
+]

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  </head>
+  <style>
+    body {
+      background-color: gray;
+      color: white;
+    }
+
+    .container {
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 2rem;
+      border-radius: 20px;
+    }
+  </style>
+
+  <body>
+    <br />
+    <div class="container text-center">
+      <h1>Weather App</h1>
+      <p>Enter City Name</p>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Enter City Name"
+        name="location"
+        id="location"
+      /><br />
+      <button id="submit" class="btn btn-primary x-large">Search</button>
+      <br />
+      <div id="outputdata"></div>
+    </div>
+    <br /><br />
+    <script type="text/javascript">
+      var apiKey = "58098129e91d3294c18d6bfc9b13fd70";
+      var searchkey = "";
+      $(document).ready(function () {
+        $("#submit").click(function () {
+          var location = $("#location").val();
+          if (!isNaN(location)) {
+            key = "zip";
+          } else {
+            searchkey = "q";
+          }
+          if (location != "") {
+            $.ajax({
+              url:
+                "https://api.openweathermap.org/data/2.5/weather?" +
+                searchkey +
+                "=" +
+                location +
+                "&units=imperial&appid=" +
+                apiKey,
+              dataType: "jsonp",
+              type: "GET",
+              success: function (data) {
+                var result = outputdata(data);
+                $("#outputdata").html(result);
+                $("#outputdata").val("");
+              },
+            });
+          }
+        });
+      });
+
+      function outputdata(data) {
+        return (
+          "<div><h2>Weather in " +
+          data.name +
+          "</h2>" +
+          "<img src='https://openweathermap.org/img/w/" +
+          data.weather[0].icon +
+          ".png' width=100px>" +
+          "<h1>Weather  : " +
+          data.weather[0].main +
+          " <br>" +
+          " Description :  " +
+          data.weather[0].description +
+           "<br>" +
+           " Tempature : " +
+          data.main.temp +
+          " F <br>" +
+          " High Tempature : " +
+          data.main.temp_max +
+          " F<br>" +
+          " Low Tempature : " +
+          data.main.temp_min +
+          " F<br>" +
+          " Pressure : " +
+          data.main.pressure +
+          " hpa <br>" +
+          " Humidity : " +
+          data.main.humidity +
+          " % <br>" +
+          " Visibility : " +
+          data.visibility +
+          " meters <br>" +
+          " Wind Speed : " +
+          data.wind.speed +
+          " m/sec <br>" +
+          " Wind Direction : " +
+          data.wind.deg +
+           "degree </h1></div>"
+        ); 
+      }
+    </script>
+  </body>
+</html>

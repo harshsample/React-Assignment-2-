@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Autocomplete search</title>
+</head>
+<style>
+  body{
+    background-color: teal;
+    text-align: center;
+    color: white;
+  }
+  input{
+    width: 400px;
+    height: 50px;
+    text-align: center;
+    border: none;
+    border-radius: 20px;
+    font-size: 20px;
+  }
+  #searchSuggestions{
+    font-size: 20px;
+  }
+</style>
+<body>
+  <h1>Autocomplete search</h1>
+  <input type="text" id="searchInput" placeholder="Search Any You Want......">
+  <div id="searchSuggestions"></div>
+
+  <script>
+    const searchInput = document.getElementById("searchInput");
+    const searchSuggestions = document.getElementById("searchSuggestions");
+
+    searchInput.addEventListener("input", function () {
+      const searchTerm = searchInput.value;
+
+      if (!searchTerm) {
+        searchSuggestions.innerHTML = "";
+        return;
+      }
+
+      const apiUrl = `https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=${searchTerm}&origin=*`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          displaySuggestions(data[1]);
+        })
+        .catch(error => console.error(error));
+    });
+
+    function displaySuggestions(suggestions) {
+      searchSuggestions.innerHTML = "";
+
+      suggestions.forEach(suggestion => {
+        const suggestionItem = document.createElement("div");
+        suggestionItem.innerHTML = `<div>${suggestion}</div>`;
+        suggestionItem.addEventListener("click", function () {
+          searchInput.value = suggestion;
+          searchSuggestions.innerHTML = "";
+        });
+        searchSuggestions.appendChild(suggestionItem);
+      });
+    }
+  </script>
+</body>
+</html>

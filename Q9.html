@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load Decument</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color:bisque;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+#content-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#content-list li {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+#load-more-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: blueviolet;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+#load-more-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+    </style>
+</head>
+
+<body>
+    <ul id="content-list">
+        <!-- Existing content goes here -->
+    </ul>
+    <button id="load-more-button">Load More</button>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const $contentList = $('#content-list');
+            const $loadMoreButton = $('#load-more-button');
+            let page = 1; // Initial page number
+            const perPage = 10; // Number of items to load per request
+            let isLoading = false;
+
+            function loadMoreContent() {
+                if (isLoading) return;
+                isLoading = true;
+
+                // Make an AJAX request to fetch additional content
+                $.ajax({
+                    url: `https://jsonplaceholder.typicode.com/posts?_page=${page}&_limit=${perPage}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.length > 0) {
+                            data.forEach(item => {
+                                // Append each item to the content list
+                                $contentList.append(`<li>${item.title}</li>`);
+                            });
+                            isLoading = false;
+                            page++; // Increment the page number for the next request
+                        } else {
+                            $loadMoreButton.text('No more items'); // No more items to load
+                            $loadMoreButton.attr('disabled', true);
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error loading content:', error);
+                        isLoading = false;
+                    }
+                });
+            }
+
+            // Add a click event handler to the "Load More" button
+            $loadMoreButton.on('click', loadMoreContent);
+
+            // Initial load
+            loadMoreContent();
+        });
+    </script>
+</body>
+
+</html>
